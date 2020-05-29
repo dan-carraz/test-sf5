@@ -5,6 +5,8 @@ RUN apk add --update autoconf
 RUN apk add --update icu-dev
 
 RUN docker-php-ext-install opcache \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install pdo pdo_mysql \
     && docker-php-ext-install intl \
     && docker-php-ext-configure intl
 

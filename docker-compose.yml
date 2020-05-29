@@ -6,10 +6,23 @@ services:
     container_name: test-sf5-php
     volumes:
       - ./symfony:/srv/app
+  mysql:
+    image: "mysql:latest"
+    container_name: test-sf5-mysql
+    ports:
+      - 33006:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test-sf5
+      MYSQL_USER: test-sf5
+      MYSQL_PASSWORD: test-sf5
   nginx:
     image: "nginx:stable-alpine"
     depends_on:
       - php
+      - mysql
     container_name: test-sf5-nginx
     ports:
       - 8080:80

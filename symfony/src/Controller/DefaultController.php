@@ -16,4 +16,15 @@ class DefaultController extends AbstractController
     {
         return ["number" => 2];
     }
+
+    /**
+     * @Route("/test/{id}")
+     * @Template("default.html.twig")
+     * @param string $id
+     * @return array
+     */
+    public function test(string $id)
+    {
+        return ["number" => $id];
+    }
 }

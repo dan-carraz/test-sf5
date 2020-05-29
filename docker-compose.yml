@@ -1,0 +1,18 @@
+version: "3.4"
+services:
+  php:
+    build:
+      context: ./docker/php
+    container_name: test-sf5-php
+    volumes:
+      - ./symfony:/srv/app
+  nginx:
+    image: "nginx:stable-alpine"
+    depends_on:
+      - php
+    container_name: test-sf5-nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./symfony:/srv/app
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro

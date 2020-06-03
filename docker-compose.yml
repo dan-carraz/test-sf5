@@ -1,6 +1,8 @@
 version: "3.4"
 services:
   php:
+    depends_on:
+      - mysql
     build:
       context: ./docker/php
     container_name: test-sf5-php
@@ -22,7 +24,6 @@ services:
     image: "nginx:stable-alpine"
     depends_on:
       - php
-      - mysql
     container_name: test-sf5-nginx
     ports:
       - 8080:80

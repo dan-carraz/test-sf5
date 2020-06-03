@@ -2,14 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource()
  */
 class User
 {
+    public const SEX_MALE = 1;
+    public const SEX_FEMALE = 2;
+    public const SEX_OTHER = 3;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -19,21 +27,27 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private ?string $lastName;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     * @Assert\Type("\DateTimeInterface")
      */
-    private ?\DateTimeInterface $birthDate;
+    private ?DateTimeInterface $birthDate;
 
     /**
      * @ORM\Column(type="smallint")
+     * @Assert\NotBlank()
+     * @Assert\Choice({User::SEX_MALE, User::SEX_FEMALE, User::SEX_OTHER}, message="Not valid choice. 1: Male, 2: Female, 3: Other")
      */
     private ?int $sex;
 
@@ -66,12 +80,12 @@ class User
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTimeInterface
+    public function getBirthDate(): ?DateTimeInterface
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTimeInterface $birthDate): self
+    public function setBirthDate(DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 

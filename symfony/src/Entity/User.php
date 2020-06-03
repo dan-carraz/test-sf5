@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -50,6 +52,12 @@ class User
      * @Assert\Choice({User::SEX_MALE, User::SEX_FEMALE, User::SEX_OTHER}, message="Not valid choice. 1: Male, 2: Female, 3: Other")
      */
     private ?int $sex;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Address", mappedBy="user", cascade={"persist", "remove"})
+     * @ApiSubresource()
+     */
+    private PersistentCollection $addresses;
 
     public function getId(): ?int
     {
@@ -102,5 +110,26 @@ class User
         $this->sex = $sex;
 
         return $this;
+    }
+
+    /**
+     * @return PersistentCollection
+     */
+    public function getAddresses(): PersistentCollection
+    {
+        return $this->addresses;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function addAddress(Address $address): void
+    {
+        if ($this->addresses->contains($address)) {
+            return;
+        }
+
+        $this->addresses[] = $address;
+        $address->setUser($this);
     }
 }

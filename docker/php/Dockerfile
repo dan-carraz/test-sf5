@@ -18,7 +18,11 @@ RUN pecl install apcu && docker-php-ext-enable apcu
 
 COPY ./conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php -r "if (hash_file('sha384', 'composer-setup.php') === 'e0012edf3e80b6978849f5eff0d4b4e4c79ff1609dd1e613307e16318854d24ae64f26d17af3ef0bf7cfb710ca74755a') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
-    && php composer-setup.php  --filename=composer --install-dir="/usr/bin"\
-    && php -r "unlink('composer-setup.php');"
+RUN EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)" \
+&& php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+&& ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+RUN if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then echo 'ERROR: Invalid installer checksum'; exit 1; fi;
+
+RUN php composer-setup.php --quiet --filename=composer --install-dir="/usr/bin" \
+&& rm composer-setup.php

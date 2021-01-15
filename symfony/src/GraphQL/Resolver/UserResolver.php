@@ -4,38 +4,53 @@ namespace App\GraphQL\Resolver;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use GraphQL\Type\Definition\ResolveInfo;
-use JetBrains\PhpStorm\Pure;
+use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
 
-class UserResolver extends AbstractResolver
+class UserResolver implements ResolverInterface
 {
-    protected const ENTITY_CLASS = User::class;
-    protected const ENTITY_ALIAS = "users";
+    /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
 
-    #[Pure] public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        parent::__construct($userRepository);
+        $this->userRepository = $userRepository;
     }
 
     /**
      * @param ResolveInfo $info
      * @param int $id
-     * @return array|null
+     * @return User|null
      * @throws NonUniqueResultException
      */
-    public function getUser(ResolveInfo $info, int $id): array|null
+    public function getUser(ResolveInfo $info, int $id): User|null
     {
         return $this->prepareQuery($info)
-            ->andWhere(static::ENTITY_ALIAS . ".id = :id")
+            ->andWhere("users.id = :id")
             ->setParameter("id", $id)
-            ->getQuery()->getOneOrNullResult(AbstractQuery::HYDRATE_ARRAY);
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function getUsers(ResolveInfo $info): array
     {
         return $this->prepareQuery($info)
-            ->getQuery()->getArrayResult();
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function prepareQuery(ResolveInfo $info): QueryBuilder
+    {
+        $qb = $this->userRepository->createQueryBuilder("users");
+        if (isset(($info->getFieldSelection())["addresses"])) {
+            $qb->leftJoin("users.addresses", "addresses")
+                ->addSelect("addresses");
+        }
+
+        return $qb;
     }
 }

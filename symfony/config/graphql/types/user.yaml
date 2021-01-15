@@ -10,3 +10,7 @@ User:
         type: 'String!'
       sex:
         type: 'Int!'
+      birthDateFormated:
+        type: 'String!'
+      addresses:
+        type: '[Address]'

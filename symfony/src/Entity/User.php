@@ -93,6 +93,15 @@ class User
         return $this->birthDate;
     }
 
+    public function getBirthDateFormated(): ?string
+    {
+        if ($this->birthDate instanceof DateTimeInterface) {
+            return $this->birthDate->format("Y-m-d");
+        }
+
+        return null;
+    }
+
     public function setBirthDate(DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;

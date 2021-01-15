@@ -17,3 +17,6 @@ start:
 
 stop:
 	docker-compose stop
+
+docker-exec:
+	docker exec -it test-sf5-php sh

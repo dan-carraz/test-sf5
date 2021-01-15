@@ -6,6 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/api-pack": "^1.2",
+        "overblog/graphql-bundle": "^0.13.5",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/asset": "~5.0",
         "symfony/console": "~5.0",
@@ -31,6 +32,7 @@
         "symfony/yaml": "~5.0"
     },
     "require-dev": {
+        "overblog/graphiql-bundle": "^0.2.1",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.18",
         "symfony/phpunit-bridge": "^5.1",

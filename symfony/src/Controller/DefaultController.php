@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +13,7 @@ class DefaultController extends AbstractController
      * @Template("default.html.twig")
      * @return array
      */
-    public function index()
+    #[ArrayShape(["number" => "int"])] public function index() : array
     {
         return ["number" => 2];
     }
@@ -23,7 +24,7 @@ class DefaultController extends AbstractController
      * @param string $id
      * @return array
      */
-    public function test(string $id)
+    #[ArrayShape(["number" => "string"])] public function test(string $id): array
     {
         return ["number" => $id];
     }

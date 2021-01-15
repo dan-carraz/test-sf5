@@ -55,7 +55,7 @@ class Address
     private ?string $country;
 
     /**
-     * @var User
+     * @var User|null
      * @ORM\ManyToOne(targetEntity="User", inversedBy="addresses")
      * @ORM\JoinColumn(referencedColumnName="id")
      * @Assert\NotBlank()

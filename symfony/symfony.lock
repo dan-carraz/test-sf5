@@ -169,9 +169,6 @@
     "php": {
         "version": "7.4"
     },
-    "php-webdriver/webdriver": {
-        "version": "1.9.0"
-    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -397,15 +394,6 @@
     },
     "symfony/orm-pack": {
         "version": "v1.1.0"
-    },
-    "symfony/panther": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "93d9baa582d0a755cc9ef81bc38a921d5fa16973"
-        }
     },
     "symfony/phpunit-bridge": {
         "version": "4.3",

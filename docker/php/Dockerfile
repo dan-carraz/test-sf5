@@ -3,16 +3,12 @@ WORKDIR /srv/app
 
 RUN apk add --update autoconf
 RUN apk add --update icu-dev
-RUN apk add --update libzip-dev
-RUN apk add --update zip
 
 RUN docker-php-ext-install opcache \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install pdo pdo_mysql \
     && docker-php-ext-install intl \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install zip \
-    && docker-php-ext-configure zip
+    && docker-php-ext-configure intl
 
 RUN apk add --no-cache $PHPIZE_DEPS \
     && pecl install xdebug \

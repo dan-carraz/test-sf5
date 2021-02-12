@@ -1,5 +1,10 @@
 ##Pour installer le projet
 ```
+make install
+```
+
+Commandes utiles:
+```
 make
 ```
 

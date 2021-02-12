@@ -7,7 +7,10 @@ include symfony/.env.local
 ##
 ## Setup
 ## -----
-install: docker-build composer-install doctrine-force ## Installation du projet
+install: docker-pull docker-build composer-install doctrine-force ## Installation du projet
+
+docker-pull: ## Pull des containers docker
+	docker-compose pull
 
 docker-build: ## Build des containers docker
 	docker-compose build

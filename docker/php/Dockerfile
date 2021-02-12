@@ -3,12 +3,16 @@ WORKDIR /srv/app
 
 RUN apk add --update autoconf
 RUN apk add --update icu-dev
+RUN apk add --update libzip-dev
+RUN apk add --update zip
 
 RUN docker-php-ext-install opcache \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install pdo pdo_mysql \
     && docker-php-ext-install intl \
-    && docker-php-ext-configure intl
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install zip \
+    && docker-php-ext-configure zip
 
 RUN apk add --no-cache $PHPIZE_DEPS \
     && pecl install xdebug \
@@ -16,7 +20,7 @@ RUN apk add --no-cache $PHPIZE_DEPS \
 
 RUN pecl install apcu && docker-php-ext-enable apcu
 
-COPY ./conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY ./conf.d/* /usr/local/etc/php/conf.d/
 
 RUN EXPECTED_CHECKSUM="$(wget -q -O - https://composer.github.io/installer.sig)" \
 && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \

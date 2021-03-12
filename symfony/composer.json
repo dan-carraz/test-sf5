@@ -1,6 +1,8 @@
 {
     "type": "project",
     "license": "proprietary",
+    "description": "Projet de test",
+    "name": "1_0/tests_sf5",
     "require": {
         "php": "^8",
         "ext-ctype": "*",

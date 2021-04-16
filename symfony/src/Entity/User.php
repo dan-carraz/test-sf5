@@ -69,7 +69,6 @@ class User
     /**
      * @ORM\OneToMany(targetEntity="Address", mappedBy="user", cascade={"persist", "remove"})
      * @ApiSubresource()
-     * @Groups({"read"})
      */
     private PersistentCollection $addresses;
 

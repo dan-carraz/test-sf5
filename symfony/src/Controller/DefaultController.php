@@ -13,7 +13,8 @@ class DefaultController extends AbstractController
      * @Template("default.html.twig")
      * @return array
      */
-    #[ArrayShape(["number" => "int"])] public function index() : array
+    #[ArrayShape(["number" => "int"])]
+    public function index() : array
     {
         return ["number" => 2];
     }
@@ -24,7 +25,8 @@ class DefaultController extends AbstractController
      * @param string $id
      * @return array
      */
-    #[ArrayShape(["number" => "string"])] public function test(string $id): array
+    #[ArrayShape(["number" => "string"])]
+    public function test(string $id): array
     {
         return ["number" => $id];
     }

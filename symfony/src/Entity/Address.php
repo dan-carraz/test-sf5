@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 
 /**
  * @ApiResource()
@@ -15,10 +16,11 @@ class Address
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UlidGenerator::class)
+     * @ORM\Column(type="ulid", unique=true)
      */
-    private ?int $id;
+    private ?string $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -62,7 +64,7 @@ class Address
      */
     private ?User $user;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

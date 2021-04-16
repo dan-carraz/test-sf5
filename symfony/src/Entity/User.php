@@ -6,14 +6,21 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\UserRepository;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['read']],
+)]
 class User
 {
     public const SEX_MALE = 1;
@@ -22,20 +29,24 @@ class User
 
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UlidGenerator::class)
+     * @ORM\Column(type="ulid", unique=true)
+     * @Groups({"read"})
      */
-    private ?int $id;
+    private ?string $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"read", "write"})
      */
     private ?string $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"read", "write"})
      */
     private ?string $lastName;
 
@@ -43,6 +54,7 @@ class User
      * @ORM\Column(type="date")
      * @Assert\NotBlank()
      * @Assert\Type("\DateTimeInterface")
+     * @Groups({"read", "write"})
      */
     private ?DateTimeInterface $birthDate;
 
@@ -50,16 +62,18 @@ class User
      * @ORM\Column(type="smallint")
      * @Assert\NotBlank()
      * @Assert\Choice({User::SEX_MALE, User::SEX_FEMALE, User::SEX_OTHER}, message="Not valid choice. 1: Male, 2: Female, 3: Other")
+     * @Groups({"read", "write"})
      */
     private ?int $sex;
 
     /**
      * @ORM\OneToMany(targetEntity="Address", mappedBy="user", cascade={"persist", "remove"})
      * @ApiSubresource()
+     * @Groups({"read"})
      */
     private PersistentCollection $addresses;
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -93,7 +107,11 @@ class User
         return $this->birthDate;
     }
 
-    public function getBirthDateFormated(): ?string
+    /**
+     * @Groups({"read"})
+     * @return string|null
+     */
+    public function getBirthDateFormatted(): ?string
     {
         if ($this->birthDate instanceof DateTimeInterface) {
             return $this->birthDate->format("Y-m-d");
@@ -107,6 +125,20 @@ class User
         $this->birthDate = $birthDate;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"read"})
+     * @return string|null
+     */
+    public function getSexFormatted(): ?string
+    {
+        return match ($this->sex) {
+            self::SEX_FEMALE => 'Femme',
+            self::SEX_MALE => 'Homme',
+            self::SEX_OTHER => 'Autre',
+            default => null,
+        };
     }
 
     public function getSex(): ?int

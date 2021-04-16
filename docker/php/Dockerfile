@@ -1,4 +1,4 @@
-FROM php:8-fpm-alpine
+FROM php:8.0.3-fpm-alpine
 WORKDIR /srv/app
 
 RUN apk add --update autoconf

@@ -35,7 +35,11 @@
         "symfony/yaml": "~5.0"
     },
     "require-dev": {
+        "behat/behat": "^3.8",
+        "behat/mink": "^1.8",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "friends-of-behat/mink-browserkit-driver": "^1.5",
+        "friends-of-behat/symfony-extension": "^2.2",
         "overblog/graphiql-bundle": "^0.2.1",
         "symfony/debug-pack": "*",
         "symfony/maker-bundle": "^1.18",

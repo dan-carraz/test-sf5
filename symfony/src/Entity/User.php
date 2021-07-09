@@ -6,70 +6,54 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\UserRepository;
 use DateTimeInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- */
 #[ApiResource(
     denormalizationContext: ['groups' => ['write']],
     normalizationContext: ['groups' => ['read']],
 )]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
     public const SEX_MALE = 1;
     public const SEX_FEMALE = 2;
     public const SEX_OTHER = 3;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UlidGenerator::class)
-     * @ORM\Column(type="ulid", unique=true)
-     * @Groups({"read"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
+    #[ORM\Column(type: "ulid", unique: true)]
+    #[Groups(['read'])]
     private ?string $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     * @Groups({"read", "write"})
-     */
+    #[ORM\Column(type: "string", length: 255)]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     private ?string $firstName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     * @Groups({"read", "write"})
-     */
+    #[ORM\Column(type: "string", length: 255)]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
     private ?string $lastName;
 
-    /**
-     * @ORM\Column(type="date")
-     * @Assert\NotBlank()
-     * @Assert\Type("\DateTimeInterface")
-     * @Groups({"read", "write"})
-     */
+    #[ORM\Column(type: "date")]
+    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Assert\Type(type: "\DateTimeInterface")]
     private ?DateTimeInterface $birthDate;
 
-    /**
-     * @ORM\Column(type="smallint")
-     * @Assert\NotBlank()
-     * @Assert\Choice({User::SEX_MALE, User::SEX_FEMALE, User::SEX_OTHER}, message="Not valid choice. 1: Male, 2: Female, 3: Other")
-     * @Groups({"read", "write"})
-     */
+    #[ORM\Column(type: "smallint")]
+    #[Groups(['write'])]
+    #[Assert\NotBlank]
+    #[Assert\Choice([self::SEX_MALE, self::SEX_FEMALE, self::SEX_OTHER], message: "Not valid choice. 1: Male, 2: Female, 3: Other")]
     private ?int $sex;
 
-    /**
-     * @ORM\OneToMany(targetEntity="Address", mappedBy="user", cascade={"persist", "remove"})
-     * @ApiSubresource()
-     */
+    #[ApiSubresource]
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Address::class, cascade: ["persist", "remove"])]
     private PersistentCollection $addresses;
 
     public function getId(): ?string
@@ -106,10 +90,7 @@ class User
         return $this->birthDate;
     }
 
-    /**
-     * @Groups({"read"})
-     * @return string|null
-     */
+    #[Groups(['read'])]
     public function getBirthDateFormatted(): ?string
     {
         if ($this->birthDate instanceof DateTimeInterface) {
@@ -126,10 +107,7 @@ class User
         return $this;
     }
 
-    /**
-     * @Groups({"read"})
-     * @return string|null
-     */
+    #[Groups(['read'])]
     public function getSexFormatted(): ?string
     {
         return match ($this->sex) {

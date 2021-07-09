@@ -11,9 +11,6 @@ use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
 
 class UserResolver implements ResolverInterface
 {
-    /**
-     * @var UserRepository
-     */
     private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
@@ -22,16 +19,15 @@ class UserResolver implements ResolverInterface
     }
 
     /**
-     * @param ResolveInfo $info
-     * @param int $id
      * @return User|null
+     *
      * @throws NonUniqueResultException
      */
-    public function getUser(ResolveInfo $info, int $id): User|null
+    public function getUser(ResolveInfo $info, int $id): User | null
     {
         return $this->prepareQuery($info)
-            ->andWhere("users.id = :id")
-            ->setParameter("id", $id)
+            ->andWhere('users.id = :id')
+            ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -45,10 +41,10 @@ class UserResolver implements ResolverInterface
 
     private function prepareQuery(ResolveInfo $info): QueryBuilder
     {
-        $qb = $this->userRepository->createQueryBuilder("users");
-        if (isset(($info->getFieldSelection())["addresses"])) {
-            $qb->leftJoin("users.addresses", "addresses")
-                ->addSelect("addresses");
+        $qb = $this->userRepository->createQueryBuilder('users');
+        if (isset(($info->getFieldSelection())['addresses'])) {
+            $qb->leftJoin('users.addresses', 'addresses')
+                ->addSelect('addresses');
         }
 
         return $qb;

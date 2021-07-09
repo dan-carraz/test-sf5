@@ -34,3 +34,5 @@ stop: ## Arrêt des containers du projet
 
 php: ## Connexion au container php
 	$(DOCKER_EXEC) sh
+phpcs: ## Lancement du sniffer
+	$(DOCKER_EXEC) vendor/bin/php-cs-fixer fix

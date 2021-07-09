@@ -15,13 +15,13 @@ class UserFixtures extends Fixture
     {
         $UserPosts = UserFactory::createMany(10);
 
-        foreach($UserPosts as $userPost) {
+        foreach ($UserPosts as $userPost) {
             /** @var User $user */
             $user = $userPost->object();
 
             $addressPosts = AddressFactory::createMany(mt_rand(0, 3));
 
-            foreach($addressPosts as $addressPost) {
+            foreach ($addressPosts as $addressPost) {
                 /** @var Address $address */
                 $address = $addressPost->object();
                 $user->addAddress($address);

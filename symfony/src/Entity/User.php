@@ -8,9 +8,9 @@ use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 
 #[ApiResource(
     denormalizationContext: ['groups' => ['write']],
@@ -24,36 +24,36 @@ class User
     public const SEX_OTHER = 3;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: "CUSTOM")]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    #[ORM\Column(type: "ulid", unique: true)]
+    #[ORM\Column(type: 'ulid', unique: true)]
     #[Groups(['read'])]
     private ?string $id;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     private ?string $firstName;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     private ?string $lastName;
 
-    #[ORM\Column(type: "date")]
+    #[ORM\Column(type: 'date')]
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Type(type: "\DateTimeInterface")]
     private ?DateTimeInterface $birthDate;
 
-    #[ORM\Column(type: "smallint")]
+    #[ORM\Column(type: 'smallint')]
     #[Groups(['write'])]
     #[Assert\NotBlank]
-    #[Assert\Choice([self::SEX_MALE, self::SEX_FEMALE, self::SEX_OTHER], message: "Not valid choice. 1: Male, 2: Female, 3: Other")]
+    #[Assert\Choice([self::SEX_MALE, self::SEX_FEMALE, self::SEX_OTHER], message: 'Not valid choice. 1: Male, 2: Female, 3: Other')]
     private ?int $sex;
 
     #[ApiSubresource]
-    #[ORM\OneToMany(mappedBy: "user", targetEntity: Address::class, cascade: ["persist", "remove"])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist', 'remove'])]
     private PersistentCollection $addresses;
 
     public function getId(): ?string
@@ -94,7 +94,7 @@ class User
     public function getBirthDateFormatted(): ?string
     {
         if ($this->birthDate instanceof DateTimeInterface) {
-            return $this->birthDate->format("Y-m-d");
+            return $this->birthDate->format('Y-m-d');
         }
 
         return null;
@@ -130,17 +130,11 @@ class User
         return $this;
     }
 
-    /**
-     * @return PersistentCollection
-     */
     public function getAddresses(): PersistentCollection
     {
         return $this->addresses;
     }
 
-    /**
-     * @param Address $address
-     */
     public function addAddress(Address $address): void
     {
         if ($this->addresses->contains($address)) {

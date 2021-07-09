@@ -1,6 +1,16 @@
 FROM php:8.0.3-fpm-alpine
 WORKDIR /srv/app
 
+ARG USER_ID
+ARG GROUP_ID
+
+RUN set -x \
+    && deluser www-data \
+	&& addgroup -g ${GROUP_ID} -S www-data \
+	&& adduser -u ${USER_ID} -D -S -G www-data www-data
+
+RUN chown -R www-data:www-data /srv/app
+
 RUN apk add --update autoconf
 RUN apk add --update icu-dev
 

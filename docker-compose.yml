@@ -5,6 +5,9 @@ services:
       - mysql
     build:
       context: ./docker/php
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
     container_name: test-sf5-php
     volumes:
       - ./symfony:/srv/app

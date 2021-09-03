@@ -23,7 +23,7 @@ class UserResolver implements ResolverInterface
      *
      * @throws NonUniqueResultException
      */
-    public function getUser(ResolveInfo $info, int $id): User | null
+    public function getUser(ResolveInfo $info, int $id): User|null
     {
         return $this->prepareQuery($info)
             ->andWhere('users.id = :id')

@@ -20,6 +20,9 @@ docker-build: ## Build des containers docker
 doctrine-force: start ## Mise à jour de la base de donnée
 	$(DOCKER_EXEC) bin/console d:s:u --force
 
+doctrine-fixtures: ## Lancement des fixtures
+	$(DOCKER_EXEC) bin/console d:f:l -q
+
 composer-install: start ## Installation des vendor
 	$(DOCKER_EXEC) composer install
 
@@ -36,3 +39,6 @@ php: ## Connexion au container php
 	$(DOCKER_EXEC) sh
 phpcs: ## Lancement du sniffer
 	$(DOCKER_EXEC) vendor/bin/php-cs-fixer fix
+
+tests: ## Lancement des tests
+	$(DOCKER_EXEC) vendor/bin/phpunit

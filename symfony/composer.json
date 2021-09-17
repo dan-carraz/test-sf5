@@ -4,7 +4,7 @@
     "description": "Projet de test",
     "name": "1_0/tests_sf5",
     "require": {
-        "php": "^8",
+        "php": "^8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/core": "^2.6",

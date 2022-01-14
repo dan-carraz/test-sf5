@@ -28,6 +28,9 @@
     "composer/package-versions-deprecated": {
         "version": "1.10.99"
     },
+    "composer/pcre": {
+        "version": "1.0.0"
+    },
     "composer/semver": {
         "version": "3.2.5"
     },
@@ -752,6 +755,9 @@
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
+    },
+    "zenstruck/assert": {
+        "version": "v1.0.0"
     },
     "zenstruck/callback": {
         "version": "v1.2.0"

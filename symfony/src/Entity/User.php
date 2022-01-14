@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Enum\UserSex;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,10 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
-    public const SEX_MALE = 1;
-    public const SEX_FEMALE = 2;
-    public const SEX_OTHER = 3;
-
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
@@ -46,11 +43,11 @@ class User
     #[Assert\Type(type: "\DateTimeInterface")]
     private ?DateTimeInterface $birthDate;
 
-    #[ORM\Column(type: 'smallint')]
+    #[ORM\Column(type: 'smallint', enumType: UserSex::class)]
     #[Groups(['write'])]
     #[Assert\NotBlank]
-    #[Assert\Choice([self::SEX_MALE, self::SEX_FEMALE, self::SEX_OTHER], message: 'Not valid choice. 1: Male, 2: Female, 3: Other')]
-    private ?int $sex;
+    #[Assert\Choice([UserSex::Male, UserSex::Female, UserSex::Other], message: 'Not valid choice. 1: Male, 2: Female, 3: Other')]
+    private ?UserSex $sex;
 
     #[ApiSubresource]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist', 'remove'])]
@@ -110,21 +107,20 @@ class User
     #[Groups(['read'])]
     public function getSexFormatted(): ?string
     {
-        return match ($this->sex) {
-            self::SEX_FEMALE => 'Femme',
-            self::SEX_MALE => 'Homme',
-            self::SEX_OTHER => 'Autre',
-            default => null,
-        };
+        return $this->sex instanceof UserSex ? $this->sex->getSexFormatted() : null;
     }
 
-    public function getSex(): ?int
+    public function getSex(): ?UserSex
     {
         return $this->sex;
     }
 
-    public function setSex(int $sex): self
+    public function setSex(int|UserSex $sex): self
     {
+        if (!$sex instanceof UserSex) {
+            $sex = UserSex::from($sex);
+        }
+
         $this->sex = $sex;
 
         return $this;
@@ -141,7 +137,7 @@ class User
             return;
         }
 
-        $this->addresses[] = $address;
+        $this->addresses->add($address);
         $address->setUser($this);
     }
 }

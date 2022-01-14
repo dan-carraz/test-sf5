@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\User;
+use App\Enum\UserSex;
 use App\Repository\UserRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -28,11 +29,11 @@ final class UserFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
-        $sex = self::faker()->numberBetween(User::SEX_MALE, User::SEX_OTHER);
+        $sex = self::faker()->randomElement(UserSex::cases());
 
         $firstName = match ($sex) {
-            User::SEX_MALE => self::faker()->firstNameMale,
-            User::SEX_FEMALE => self::faker()->firstNameFemale,
+            UserSex::Male => self::faker()->firstNameMale,
+            UserSex::Female => self::faker()->firstNameFemale,
             default => self::faker()->firstName,
         };
 

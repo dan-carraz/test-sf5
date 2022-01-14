@@ -19,8 +19,6 @@ class UserResolver implements ResolverInterface
     }
 
     /**
-     * @return User|null
-     *
      * @throws NonUniqueResultException
      */
     public function getUser(ResolveInfo $info, int $id): User|null

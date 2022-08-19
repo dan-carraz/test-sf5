@@ -12,3 +12,5 @@ make
 Url : http://localhost:8080/
 
 API: http://localhost:8080/api
+
+API GRAPHQL: http://localhost:8080/api/graphql

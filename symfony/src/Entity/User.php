@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Enum\UserSex;
+use App\GraphQL\Resolver\UserResolver;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,8 +15,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
+    graphql: [
+        'item_query' => ['normalization_context' => ['groups' => ['read', 'readGraph']]],
+        'collection_query' => ['normalization_context' => ['groups' => ['read', 'readGraph']]],
+        'retrieveById' => [
+            'item_query' => UserResolver::class,
+            'read' => false,
+            'args' => [
+                'id' => ['type' => 'String!'],
+            ],
+        ],
+    ],
     denormalizationContext: ['groups' => ['write']],
-    normalizationContext: ['groups' => ['read']],
+    normalizationContext: ['groups' => ['read']]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
@@ -51,6 +63,7 @@ class User
 
     #[ApiSubresource]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist', 'remove'])]
+    #[Groups(['readGraph'])]
     private PersistentCollection $addresses;
 
     public function getId(): ?string

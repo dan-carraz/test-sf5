@@ -2,49 +2,43 @@
 
 namespace App\GraphQL\Resolver;
 
+use ApiPlatform\Core\GraphQl\Resolver\QueryItemResolverInterface;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\QueryBuilder;
 use GraphQL\Type\Definition\ResolveInfo;
-use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
+use Symfony\Component\Uid\Ulid;
 
-class UserResolver implements ResolverInterface
+class UserResolver implements QueryItemResolverInterface
 {
-    private UserRepository $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function getUser(ResolveInfo $info, int $id): User|null
+    public function __invoke($item, array $context)
     {
-        return $this->prepareQuery($info)
-            ->andWhere('users.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
+        /** @var ResolveInfo $info */
+        $info = $context['info'];
+
+        if ('retrieveByIdUser' === $info->fieldName) {
+            return $this->retrieveByUserId($context);
+        }
+
+        return $item;
     }
 
-    public function getUsers(ResolveInfo $info): array
+    private function retrieveByUserId(array $context): ?User
     {
-        return $this->prepareQuery($info)
-            ->getQuery()
-            ->getResult();
-    }
+        $qb = $this->userRepository->createQueryBuilder('user')
+            ->andWhere('user.id = :id')
+            ->setParameter('id', (new Ulid($context['args']['id']))->toBinary());
 
-    private function prepareQuery(ResolveInfo $info): QueryBuilder
-    {
-        $qb = $this->userRepository->createQueryBuilder('users');
-        if (isset(($info->getFieldSelection())['addresses'])) {
-            $qb->leftJoin('users.addresses', 'addresses')
+        $info = $context['info'];
+
+        if (isset($info->getFieldSelection()['addresses'])) {
+            $qb->leftJoin('user.addresses', 'addresses')
                 ->addSelect('addresses');
         }
 
-        return $qb;
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

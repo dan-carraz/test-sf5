@@ -18,12 +18,20 @@ use Symfony\Component\Validator\Constraints as Assert;
     graphql: [
         'item_query' => ['normalization_context' => ['groups' => ['read', 'readGraph']]],
         'collection_query' => ['normalization_context' => ['groups' => ['read', 'readGraph']]],
+        'create',
+        'update',
+        'delete',
         'retrieveById' => [
             'item_query' => UserResolver::class,
             'read' => false,
             'args' => [
                 'id' => ['type' => 'String!'],
             ],
+        ],
+        'updateById' => [
+            'mutation' => UserResolver::class,
+            'deserialize' => false,
+            'read' => false,
         ],
     ],
     denormalizationContext: ['groups' => ['write']],

@@ -1,0 +1,115 @@
+type Address implements Node {
+  id: ID!
+  _id: String
+  street: String!
+  streetBis: String
+  zipCode: String!
+  city: String!
+  state: String
+  country: String!
+  user: User
+}
+
+# Connection for Address.
+type AddressConnection {
+  edges: [AddressEdge]
+  pageInfo: AddressPageInfo!
+  totalCount: Int!
+}
+
+# Edge of Address.
+type AddressEdge {
+  node: Address
+  cursor: String!
+}
+
+# Information about the current page.
+type AddressPageInfo {
+  endCursor: String
+  startCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+# A node, according to the Relay specification.
+interface Node {
+  # The id of this node.
+  id: ID!
+}
+
+type Query {
+  node(id: ID!): Node
+  addresses(
+    # Returns the first n elements from the list.
+    first: Int
+
+    # Returns the last n elements from the list.
+    last: Int
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+  ): AddressConnection
+  user(id: ID!): User
+  users(
+    # Returns the first n elements from the list.
+    first: Int
+
+    # Returns the last n elements from the list.
+    last: Int
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+  ): UserConnection
+  retrieveByIdUser(id: String!): User
+}
+
+type User implements Node {
+  id: ID!
+  _id: String
+  firstName: String!
+  lastName: String!
+  birthDate: String!
+  addresses(
+    # Returns the first n elements from the list.
+    first: Int
+
+    # Returns the last n elements from the list.
+    last: Int
+
+    # Returns the elements in the list that come before the specified cursor.
+    before: String
+
+    # Returns the elements in the list that come after the specified cursor.
+    after: String
+  ): AddressConnection
+  birthDateFormatted: String
+  sexFormatted: String
+}
+
+# Connection for User.
+type UserConnection {
+  edges: [UserEdge]
+  pageInfo: UserPageInfo!
+  totalCount: Int!
+}
+
+# Edge of User.
+type UserEdge {
+  node: User
+  cursor: String!
+}
+
+# Information about the current page.
+type UserPageInfo {
+  endCursor: String
+  startCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+

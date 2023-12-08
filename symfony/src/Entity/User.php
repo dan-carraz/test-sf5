@@ -111,7 +111,6 @@ class User
 
     public function setSex(int|UserSex $sex): self
     {
-        dd($sex);
         if (!$sex instanceof UserSex) {
             $sex = UserSex::from($sex);
         }

@@ -9,6 +9,7 @@ enum UserSex: int
     case Male = 1;
     case Female = 2;
     case Other = 3;
+
     public function getSexFormatted(): string
     {
         return match ($this) {

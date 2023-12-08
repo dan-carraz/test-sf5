@@ -9,20 +9,20 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static        Address|Proxy createOne(array $attributes = [])
- * @method static        Address[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static        Address|Proxy find($criteria)
- * @method static        Address|Proxy findOrCreate(array $attributes)
- * @method static        Address|Proxy first(string $sortedField = 'id')
- * @method static        Address|Proxy last(string $sortedField = 'id')
- * @method static        Address|Proxy random(array $attributes = [])
- * @method static        Address|Proxy randomOrCreate(array $attributes = [])
- * @method static        Address[]|Proxy[] all()
- * @method static        Address[]|Proxy[] findBy(array $attributes)
- * @method static        Address[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static        Address[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static        AddressRepository|RepositoryProxy repository()
- * @method Address|Proxy create($attributes = [])
+ * @method static Address|Proxy                     createOne(array $attributes = [])
+ * @method static Address[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Address|Proxy                     find($criteria)
+ * @method static Address|Proxy                     findOrCreate(array $attributes)
+ * @method static Address|Proxy                     first(string $sortedField = 'id')
+ * @method static Address|Proxy                     last(string $sortedField = 'id')
+ * @method static Address|Proxy                     random(array $attributes = [])
+ * @method static Address|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Address[]|Proxy[]                 all()
+ * @method static Address[]|Proxy[]                 findBy(array $attributes)
+ * @method static Address[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Address[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static AddressRepository|RepositoryProxy repository()
+ * @method        Address|Proxy                     create($attributes = [])
  */
 final class AddressFactory extends ModelFactory
 {

@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
@@ -10,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[ApiResource(uriTemplate: '/users/{id}/addresses.{_format}', operations: [new GetCollection()], uriVariables: ['id' => new Link(fromClass: User::class, identifiers: ['id'])], status: 200)]
 class Address
 {
     #[ORM\Id]

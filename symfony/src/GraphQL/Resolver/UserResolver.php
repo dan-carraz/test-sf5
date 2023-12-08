@@ -40,7 +40,7 @@ class UserResolver implements ResolverInterface
     private function prepareQuery(ResolveInfo $info): QueryBuilder
     {
         $qb = $this->userRepository->createQueryBuilder('users');
-        if (isset(($info->getFieldSelection())['addresses'])) {
+        if (isset($info->getFieldSelection()['addresses'])) {
             $qb->leftJoin('users.addresses', 'addresses')
                 ->addSelect('addresses');
         }

@@ -2,21 +2,16 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Enum\UserSex;
 use App\Repository\UserRepository;
-use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(
-    denormalizationContext: ['groups' => ['write']],
-    normalizationContext: ['groups' => ['read']],
-)]
+#[ApiResource(normalizationContext: ['groups' => ['read']], denormalizationContext: ['groups' => ['write']])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User
 {
@@ -41,7 +36,7 @@ class User
     #[Groups(['read', 'write'])]
     #[Assert\NotBlank]
     #[Assert\Type(type: "\DateTimeInterface")]
-    private ?DateTimeInterface $birthDate;
+    private ?\DateTimeInterface $birthDate;
 
     #[ORM\Column(type: 'smallint', enumType: UserSex::class)]
     #[Groups(['write'])]
@@ -49,7 +44,6 @@ class User
     #[Assert\Choice([UserSex::Male, UserSex::Female, UserSex::Other], message: 'Not valid choice. 1: Male, 2: Female, 3: Other')]
     private ?UserSex $sex;
 
-    #[ApiSubresource]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Address::class, cascade: ['persist', 'remove'])]
     private PersistentCollection $addresses;
 
@@ -82,7 +76,7 @@ class User
         return $this;
     }
 
-    public function getBirthDate(): ?DateTimeInterface
+    public function getBirthDate(): ?\DateTimeInterface
     {
         return $this->birthDate;
     }
@@ -90,14 +84,14 @@ class User
     #[Groups(['read'])]
     public function getBirthDateFormatted(): ?string
     {
-        if ($this->birthDate instanceof DateTimeInterface) {
+        if ($this->birthDate instanceof \DateTimeInterface) {
             return $this->birthDate->format('Y-m-d');
         }
 
         return null;
     }
 
-    public function setBirthDate(DateTimeInterface $birthDate): self
+    public function setBirthDate(\DateTimeInterface $birthDate): self
     {
         $this->birthDate = $birthDate;
 
@@ -117,6 +111,7 @@ class User
 
     public function setSex(int|UserSex $sex): self
     {
+        dd($sex);
         if (!$sex instanceof UserSex) {
             $sex = UserSex::from($sex);
         }

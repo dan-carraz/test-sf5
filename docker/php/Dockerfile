@@ -1,4 +1,4 @@
-FROM php:8.1.1-fpm-alpine
+FROM php:8.3.0-fpm-alpine3.18
 WORKDIR /srv/app
 
 ARG USER_ID
@@ -19,6 +19,8 @@ RUN docker-php-ext-install opcache \
     && docker-php-ext-install pdo pdo_mysql \
     && docker-php-ext-install intl \
     && docker-php-ext-configure intl
+
+RUN apk add --update linux-headers
 
 RUN apk add --no-cache $PHPIZE_DEPS \
     && pecl install xdebug \

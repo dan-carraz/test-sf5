@@ -9,6 +9,8 @@ use App\Repository\ProjectRepository;
 use App\Repository\RedirectionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Elastica\Client;
+use Elastica\Document;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +33,26 @@ class ImportRedirectionCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projects = $this->projectRepository->findAll();
+
+        $client = new Client([
+            'curl' => [
+                \CURLOPT_SSL_VERIFYPEER => 0,
+                \CURLOPT_SSL_VERIFYHOST => 0
+            ],
+            'host' => 'elastic',
+            'port' => 9200,
+            'auth_type' => 'basic',
+            'transport' => 'https',
+            'username' => 'elastic',
+            'password' => 'elastic',
+        ]);
+
+        $esIndex = $client->getIndex('redirections');
+
+        $esIndex->create([], ['recreate' => true]);
+
+//        dd(preg_match('|'.'^/toto(\/?\?.*)?$'.'|', '/toto/?prout'));
+        $documents = [];
 
         foreach ($projects as $project) {
             $directory = self::REDIRECT_DIR.$project->getName();
@@ -59,15 +81,24 @@ class ImportRedirectionCommand extends Command
                         }
 
                         $redirections[] = [$matches[1], $matches[2]];
+                        $documents[] = new Document(md5($matches[1]), [
+                            'project' => $project->getName(),
+                            'pattern' => $matches[1],
+                            'replacement' => $matches[2],
+                            'status' =>301
+                        ]);
 
 
                         if (0 === $index % 100) {
                             $this->redirectionRepository->createRedirections($project, $redirections);
+                            $esIndex->addDocuments($documents);
+                            $documents = [];
                             $redirections = [];
                         }
                     }
 
                     $this->redirectionRepository->createRedirections($project, $redirections);
+                    $esIndex->addDocuments($documents);
 
                 } catch (\Throwable $t) {
                     $output->writeln($t->getMessage());

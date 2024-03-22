@@ -14,17 +14,17 @@ class RedirectionFixtures extends Fixture implements FixtureGroupInterface, Depe
 {
     public function load(ObjectManager $manager): void
     {
-        RedirectionFactory::createMany(500, [
-            'project' => $this->getReference('project_figaro'),
-        ]);
-
-        RedirectionFactory::createMany(10, [
-            'project' => $this->getReference('project_madame'),
-        ]);
-
-        RedirectionFactory::createMany(400, [
-            'project' => $this->getReference('project_sante'),
-        ]);
+//        RedirectionFactory::createMany(500, [
+//            'project' => $this->getReference('project_figaro'),
+//        ]);
+//
+//        RedirectionFactory::createMany(10, [
+//            'project' => $this->getReference('project_madame'),
+//        ]);
+//
+//        RedirectionFactory::createMany(400, [
+//            'project' => $this->getReference('project_sante'),
+//        ]);
     }
 
     public static function getGroups(): array

@@ -12,6 +12,7 @@ use Doctrine\Persistence\ObjectManager;
 class ProjectFixtures extends Fixture implements FixtureGroupInterface
 {
     private const PROJECTS = [
+        'avis-vin' => ['name' => 'Avis Vin', 'host' => 'https://avis-vin.lefigaro.fr'],
         'figaro' => ['name' => 'Le Figaro', 'host' => 'https://www.lefigaro.fr'],
         'madame' => ['name' => 'Madame', 'host' => 'https://madame.lefigaro.fr'],
         'sante' => ['name' => 'Santé', 'host' => 'https://sante.lefigaro.fr'],

@@ -1,8 +1,22 @@
 version: "3.4"
 services:
+  elastic:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:8.12.2"
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - node.name=test_sf5
+      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=elastic
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
   php:
     depends_on:
       - mysql
+      - elastic
     build:
       context: ./docker/php
       args:

@@ -2,15 +2,24 @@
 
 namespace App\Controller;
 
+use App\Repository\AddressRepository;
+use App\Twig\Components\AddStuffToDoctrineInterface;
 use Elastica\Client;
 use Elastica\Document;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\UX\TwigComponent\ComponentFactory;
+use Twig\Environment;
 
 class DefaultController extends AbstractController
 {
     private const DEFAULT_TEMPLATE = 'default.html.twig';
+
+    public function __construct(private AddressRepository $addressRepository, private Environment $twig, private ComponentFactory $componentFactory)
+    {
+    }
 
     #[Route(path: '/')]
     public function index(): Response
@@ -44,6 +53,32 @@ class DefaultController extends AbstractController
     #[Route(path: '/test/{id}')]
     public function test(string $id): Response
     {
+        $source = $this->twig->load(self::DEFAULT_TEMPLATE)->getSourceContext();
+        $tokens = $this->twig->tokenize($source);
+        $components = [];
+        while (!$tokens->isEOF()) {
+            $token = $tokens->next();
+
+            if ('extends' === $token->getValue()) {
+                $extends = $tokens->next();
+                $parentTemplateSource = $this->twig->load($extends->getValue())->getSourceContext();
+                dump($parentTemplateSource);
+                // TODO do recursive stuff
+            }
+
+            if ('component' === $token->getValue()) {
+                $componentToken = $tokens->next();
+                $component = $this->componentFactory->get($componentName = $componentToken->getValue());
+
+                if (!in_array($componentName, $components) && $component instanceof AddStuffToDoctrineInterface) {
+                    $components[] = $componentName;
+                    dump($component);
+                    $component->setQb($this->addressRepository->getQueryBuilder());
+                    $component->addQueryParams();
+                }
+            }
+        }
+
         return $this->render(self::DEFAULT_TEMPLATE, ['number' => $id]);
     }
 }

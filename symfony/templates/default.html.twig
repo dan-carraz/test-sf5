@@ -2,4 +2,16 @@
 
 {% block body %}
    Hello {{number}}
+
+
+   <twig:ComponentContainer>
+      <twig:TestComponent></twig:TestComponent>
+
+      <div> Hi Marc</div>
+      <twig:TestComponent></twig:TestComponent>
+      <twig:SecondComponent></twig:SecondComponent>
+   </twig:ComponentContainer>
+
+
+
 {% endblock %}

@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Redirection;
 use App\Repository\ProjectRepository;
 use App\Repository\RedirectionRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Elastica\Client;
 use Elastica\Document;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -37,7 +34,7 @@ class ImportRedirectionCommand extends Command
         $client = new Client([
             'curl' => [
                 \CURLOPT_SSL_VERIFYPEER => 0,
-                \CURLOPT_SSL_VERIFYHOST => 0
+                \CURLOPT_SSL_VERIFYHOST => 0,
             ],
             'host' => 'elastic',
             'port' => 9200,
@@ -51,7 +48,7 @@ class ImportRedirectionCommand extends Command
 
         $esIndex->create([], ['recreate' => true]);
 
-//        dd(preg_match('|'.'^/toto(\/?\?.*)?$'.'|', '/toto/?prout'));
+        //        dd(preg_match('|'.'^/toto(\/?\?.*)?$'.'|', '/toto/?prout'));
         $documents = [];
 
         foreach ($projects as $project) {
@@ -85,9 +82,8 @@ class ImportRedirectionCommand extends Command
                             'project' => $project->getName(),
                             'pattern' => $matches[1],
                             'replacement' => $matches[2],
-                            'status' =>301
+                            'status' => 301,
                         ]);
-
 
                         if (0 === $index % 100) {
                             $this->redirectionRepository->createRedirections($project, $redirections);
@@ -99,7 +95,6 @@ class ImportRedirectionCommand extends Command
 
                     $this->redirectionRepository->createRedirections($project, $redirections);
                     $esIndex->addDocuments($documents);
-
                 } catch (\Throwable $t) {
                     $output->writeln($t->getMessage());
                 }

@@ -47,7 +47,7 @@ final class RedirectionFactory extends ModelFactory
                 self::randomUrlPatternPart(),
                 self::randomUrlPatternPart().'/'.self::randomUrlPatternPart(),
                 self::randomUrlPatternPart().'/'.self::randomUrlPatternPart().'/'.self::randomUrlPatternPart(),
-                ])),
+            ])),
             'project' => ProjectFactory::random(),
             'status' => self::faker()->randomElement([410, 301]),
             'redirectUrl' => self::faker()->randomElement([self::faker()->url(), '/'.self::faker()->word()]),

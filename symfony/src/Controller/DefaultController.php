@@ -7,7 +7,6 @@ use App\Twig\Components\AddStuffToDoctrineInterface;
 use Elastica\Client;
 use Elastica\Document;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\TwigComponent\ComponentFactory;
@@ -54,6 +53,7 @@ class DefaultController extends AbstractController
     public function test(string $id): Response
     {
         $source = $this->twig->load(self::DEFAULT_TEMPLATE)->getSourceContext();
+        $start = microtime(true);
         $tokens = $this->twig->tokenize($source);
         $components = [];
         while (!$tokens->isEOF()) {
@@ -78,6 +78,31 @@ class DefaultController extends AbstractController
                 }
             }
         }
+
+        dump(microtime(true) - $start);
+
+        return $this->render(self::DEFAULT_TEMPLATE, ['number' => $id]);
+    }
+
+    #[Route(path: '/test_regex/{id}')]
+    public function testRegex(string $id): Response
+    {
+        $source = $this->twig->load(self::DEFAULT_TEMPLATE)->getSourceContext();
+        $start = microtime(true);
+        preg_match_all('/\{% component \'(?<componentName>.+)\' %}/', $source->getCode(), $matches);
+        $components = [];
+        foreach ($matches['componentName'] ?? [] as $componentName) {
+            $component = $this->componentFactory->get($componentName);
+
+            if (!in_array($componentName, $components) && $component instanceof AddStuffToDoctrineInterface) {
+                $components[] = $componentName;
+                dump($component);
+                $component->setQb($this->addressRepository->getQueryBuilder());
+                $component->addQueryParams();
+            }
+        }
+
+        dump(microtime(true) - $start);
 
         return $this->render(self::DEFAULT_TEMPLATE, ['number' => $id]);
     }
